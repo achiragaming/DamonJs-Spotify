@@ -1,6 +1,6 @@
 import { SpotifyOptions } from './Plugin';
 import { SpotifyRequest } from './SpotifyRequest';
-import { KazagumoError } from 'kazagumo';
+import { KazagumoError } from 'kazagumo-better';
 
 export class RequestManager {
   private requests: SpotifyRequest[] = [];

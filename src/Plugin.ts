@@ -6,10 +6,9 @@ import {
   KazagumoError,
   KazagumoTrack,
   SearchResultTypes,
-} from 'kazagumo';
+} from 'kazagumo-better';
 import { RequestManager } from './RequestManager';
 import undici from 'undici';
-
 
 const REGEX = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|album|artist)[\/:]([A-Za-z0-9]+)/;
 const SHORT_REGEX = /(?:https:\/\/spotify\.link)\/([A-Za-z0-9]+)/;
@@ -79,24 +78,23 @@ export class KazagumoPlugin extends Plugin {
       query = String(res.headers.location);
     }
 
-
     if (type in this.methods) {
       try {
         const _function = this.methods[type];
         const result: Result = await _function(id, options?.requester);
 
-        const loadType = type === 'track' ? 'TRACK' : 'PLAYLIST';
+        const loadType = type === 'track' ? SearchResultTypes.Track : SearchResultTypes.Playlist;
         const playlistName = result.name ?? undefined;
 
         const tracks = result.tracks.filter(this.filterNullOrUndefined);
         return this.buildSearch(playlistName, tracks, loadType);
       } catch (e) {
-        return this.buildSearch(undefined, [], 'SEARCH');
+        return this.buildSearch(undefined, [], SearchResultTypes.Search);
       }
     } else if (options?.engine === 'spotify' && !isUrl) {
       const result = await this.searchTrack(query, options?.requester);
 
-      return this.buildSearch(undefined, result.tracks, 'SEARCH');
+      return this.buildSearch(undefined, result.tracks, SearchResultTypes.Search);
     }
 
     return this._search(query, options);
@@ -110,7 +108,7 @@ export class KazagumoPlugin extends Plugin {
     return {
       playlistName,
       tracks,
-      type: type ?? 'TRACK',
+      type: type ?? SearchResultTypes.Track,
     };
   }
 

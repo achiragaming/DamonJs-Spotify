@@ -13,18 +13,18 @@
 
 ## Installation
 
-> npm i kazagumo-spotify
+> npm i kazagumo-better-spotify
 
 ## Links
 
-- Kazagumo; [npm](https://www.npmjs.com/package/kazagumo) [github](https://github.com/Takiyo0/Kazagumo)
-- Kazagumo-spotify; [npm](https://www.npmjs.com/package/kazagumo-spotify)
+- Kazagumo; [npm](https://www.npmjs.com/package/kazagumo-better) [github](https://github.com/achiragaming/kazagumo-better)
+- Kazagumo-spotify; [npm](https://www.npmjs.com/package/kazagumo-better-spotify)
 
 #### How to
 
 ```js
-const { Kazagumo } = require('kazagumo');
-const Spotify = require('kazagumo-spotify');
+const { Kazagumo } = require('kazagumo-better');
+const Spotify = require('kazagumo-better-spotify');
 
 const kazagumo = new Kazagumo(
   {

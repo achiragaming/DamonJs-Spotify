@@ -1,7 +1,7 @@
 {
-  "name": "kazagumo-spotify",
-  "version": "1.2.1",
-  "description": "A spotify module for kazagumo",
+  "name": "kazagumo-better-spotify",
+  "version": "1.0.0",
+  "description": "A Modified spotify module for kazagumo",
   "main": "dist/Index.js",
   "types": "dist/Index.d.ts",
   "files": [
@@ -16,32 +16,36 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Takiyo0/Kazagumo-spotify.git"
+    "url": "git+https://github.com/achiragaming/kazagumo-better-spotify.git"
   },
   "keywords": [
     "spotify",
     "module",
-    "kazagumo",
+    "kazagumo-better",
     "kazagumo-plugin",
     "kazagumo-plugin-spotify",
     "kazagumo-spotify",
     "plugin",
     "spotify-plugin"
   ],
-  "author": "Takiyo0",
+  "author": {
+    "name": "achira",
+    "email": "achira8856@gmail.com",
+    "url": "https://github.com/achiragaming"
+  },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Takiyo0/Kazagumo-spotify/issues"
+    "url": "https://github.com/achiragaming/kazagumo-better/issues"
   },
-  "homepage": "https://github.com/Takiyo0/Kazagumo-spotify#readme",
+  "homepage": "https://github.com/achiragaming/kazagumo-better#readme",
   "dependencies": {
-    "kazagumo": "^2.1.6",
+    "kazagumo-better": "^1.1.1",
     "undici": "^5.5.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.19",
     "@types/ws": "^8.5.3",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.14.1",
     "node-abort-controller": "^3.0.1",
     "prettier": "^2.6.2",
     "tslint": "^6.1.3",
