@@ -35,9 +35,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/achiragaming/kazagumo-better/issues"
+    "url": "https://github.com/achiragaming/kazagumo-better-spotify/issues"
   },
-  "homepage": "https://github.com/achiragaming/kazagumo-better#readme",
+  "homepage": "https://github.com/achiragaming/kazagumo-better-spotify#readme",
   "dependencies": {
     "kazagumo-better": "^1.1.1",
     "undici": "^5.5.1"
