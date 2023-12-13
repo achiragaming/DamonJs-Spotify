@@ -6,6 +6,7 @@ import {
   KazagumoError,
   KazagumoTrack,
   SearchResultTypes,
+  KazagumoPlayer,
 } from 'kazagumo-better';
 import { RequestManager } from './RequestManager';
 import undici from 'undici';
@@ -36,13 +37,24 @@ export class KazagumoPlugin extends Plugin {
    */
   public options: SpotifyOptions;
 
-  private _search: ((query: string, options?: KazagumoSearchOptions) => Promise<KazagumoSearchResult>) | null;
-  private token: string = '';
+  private _search:
+    | ((player: KazagumoPlayer, query: string, options: KazagumoSearchOptions) => Promise<KazagumoSearchResult>)
+    | null;
+
   private kazagumo: Kazagumo | null;
   private undici = undici;
 
   private readonly methods: Record<string, (id: string, requester: unknown) => Promise<Result>>;
   private requestManager: RequestManager;
+  buildSearch:
+    | ((
+        playlistInfo?:
+          | { encoded: string; info: { name: string; selectedTrack: number }; pluginInfo: unknown }
+          | undefined,
+        tracks?: KazagumoTrack[] | undefined,
+        type?: SearchResultTypes | undefined,
+      ) => KazagumoSearchResult)
+    | null;
 
   constructor(spotifyOptions: SpotifyOptions) {
     super();
@@ -56,17 +68,24 @@ export class KazagumoPlugin extends Plugin {
       playlist: this.getPlaylist.bind(this),
     };
     this.kazagumo = null;
+    this.buildSearch = null;
     this._search = null;
   }
 
   public load(kazagumo: Kazagumo) {
     this.kazagumo = kazagumo;
     this._search = kazagumo.search.bind(kazagumo);
+    this.buildSearch = kazagumo.buildSearch.bind(kazagumo);
     kazagumo.search = this.search.bind(this);
   }
 
-  private async search(query: string, options?: KazagumoSearchOptions): Promise<KazagumoSearchResult> {
-    if (!this.kazagumo || !this._search) throw new KazagumoError(1, 'kazagumo-spotify is not loaded yet.');
+  private async search(
+    player: KazagumoPlayer,
+    query: string,
+    options: KazagumoSearchOptions,
+  ): Promise<KazagumoSearchResult> {
+    if (!this.kazagumo || !this._search || !this.buildSearch)
+      throw new KazagumoError(1, 'kazagumo-spotify is not loaded yet.');
 
     if (!query) throw new KazagumoError(3, 'Query is required');
     const [, type, id] = REGEX.exec(query) || [];
@@ -84,12 +103,26 @@ export class KazagumoPlugin extends Plugin {
         const result: Result = await _function(id, options?.requester);
 
         const loadType = type === 'track' ? SearchResultTypes.Track : SearchResultTypes.Playlist;
-        const playlistName = result.name ?? undefined;
-
         const tracks = result.tracks.filter(this.filterNullOrUndefined);
-        return this.buildSearch(playlistName, tracks, loadType);
+        if (tracks.length && loadType === SearchResultTypes.Playlist) {
+          return this.buildSearch(
+            {
+              encoded: '',
+              info: { name: result.name || '', selectedTrack: 0 },
+              pluginInfo: {
+                name: 'kazagumo-better-spotify',
+              },
+            },
+            tracks,
+            loadType,
+          );
+        } else if (tracks.length && loadType === SearchResultTypes.Track) {
+          return this.buildSearch(undefined, tracks, loadType);
+        } else {
+          return this.buildSearch(undefined, [], SearchResultTypes.Empty);
+        }
       } catch (e) {
-        return this.buildSearch(undefined, [], SearchResultTypes.Search);
+        return this.buildSearch(undefined, undefined, SearchResultTypes.Error);
       }
     } else if (options?.engine === 'spotify' && !isUrl) {
       const result = await this.searchTrack(query, options?.requester);
@@ -97,19 +130,7 @@ export class KazagumoPlugin extends Plugin {
       return this.buildSearch(undefined, result.tracks, SearchResultTypes.Search);
     }
 
-    return this._search(query, options);
-  }
-
-  private buildSearch(
-    playlistName?: string,
-    tracks: KazagumoTrack[] = [],
-    type?: SearchResultTypes,
-  ): KazagumoSearchResult {
-    return {
-      playlistName,
-      tracks,
-      type: type ?? SearchResultTypes.Track,
-    };
+    return this._search(player, query, options);
   }
 
   private async searchTrack(query: string, requester: unknown): Promise<Result> {
@@ -209,7 +230,7 @@ export class KazagumoPlugin extends Plugin {
   private buildKazagumoTrack(spotifyTrack: Track, requester: unknown, thumbnail?: string) {
     return new KazagumoTrack(
       {
-        track: '',
+        encoded: '',
         info: {
           sourceName: 'spotify',
           identifier: spotifyTrack.id,
@@ -220,7 +241,10 @@ export class KazagumoPlugin extends Plugin {
           position: 0,
           title: spotifyTrack.name,
           uri: `https://open.spotify.com/track/${spotifyTrack.id}`,
-          thumbnail: thumbnail ? thumbnail : spotifyTrack.album?.images[0]?.url,
+          artworkUrl: thumbnail ? thumbnail : spotifyTrack.album?.images[0]?.url,
+        },
+        pluginInfo: {
+          name: 'kazagumo-better-spotify',
         },
       },
       requester,
