@@ -1,6 +1,6 @@
 {
   "name": "kazagumo-better-spotify",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Modified spotify module for kazagumo",
   "main": "dist/Index.js",
   "types": "dist/Index.d.ts",
