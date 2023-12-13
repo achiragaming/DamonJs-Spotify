@@ -10,7 +10,7 @@ import {
 } from 'kazagumo-better';
 import { RequestManager } from './RequestManager';
 import undici from 'undici';
-
+import * as packageJson from '../package.json';
 const REGEX = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|album|artist)[\/:]([A-Za-z0-9]+)/;
 const SHORT_REGEX = /(?:https:\/\/spotify\.link)\/([A-Za-z0-9]+)/;
 
@@ -78,7 +78,9 @@ export class KazagumoPlugin extends Plugin {
     this.buildSearch = kazagumo.buildSearch.bind(kazagumo);
     kazagumo.search = this.search.bind(this);
   }
-
+  private get pluginInfo() {
+    return { name: packageJson.name, version: packageJson.version, author: packageJson.author };
+  }
   private async search(
     player: KazagumoPlayer,
     query: string,
@@ -109,9 +111,7 @@ export class KazagumoPlugin extends Plugin {
             {
               encoded: '',
               info: { name: result.name || '', selectedTrack: 0 },
-              pluginInfo: {
-                name: 'kazagumo-better-spotify',
-              },
+              pluginInfo: this.pluginInfo,
             },
             tracks,
             loadType,
@@ -243,9 +243,7 @@ export class KazagumoPlugin extends Plugin {
           uri: `https://open.spotify.com/track/${spotifyTrack.id}`,
           artworkUrl: thumbnail ? thumbnail : spotifyTrack.album?.images[0]?.url,
         },
-        pluginInfo: {
-          name: 'kazagumo-better-spotify',
-        },
+        pluginInfo: this.pluginInfo,
       },
       requester,
     );
