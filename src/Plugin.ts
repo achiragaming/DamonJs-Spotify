@@ -8,9 +8,9 @@ import {
   SearchResultTypes,
   KazagumoPlayer,
 } from 'kazagumo-better';
+import { packageData } from './Index';
 import { RequestManager } from './RequestManager';
 import undici from 'undici';
-import * as packageJson from '../package.json';
 const REGEX = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|album|artist)[\/:]([A-Za-z0-9]+)/;
 const SHORT_REGEX = /(?:https:\/\/spotify\.link)\/([A-Za-z0-9]+)/;
 
@@ -79,7 +79,7 @@ export class KazagumoPlugin extends Plugin {
     kazagumo.search = this.search.bind(this);
   }
   private get pluginInfo() {
-    return { name: packageJson.name, version: packageJson.version, author: packageJson.author };
+    return { ...packageData };
   }
   private async search(
     player: KazagumoPlayer,

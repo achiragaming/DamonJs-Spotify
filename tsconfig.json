@@ -4,7 +4,6 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -13,6 +12,6 @@
   "rules": {
     "unified-signatures": false
   },
-  "include": ["src", "package.json", "Index.ts"],
+  "include": ["src", "package.json", "src/Index.ts"],
   "exclude": ["node_modules", "**/__tests__/*", "test", "node_modules/**", "test/**", "/node_modules/"]
 }
