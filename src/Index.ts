@@ -1,9 +1,9 @@
 import { DamonJsPlugin } from './Plugin';
 
-export const packageData = {
+const packageData = {
   name: 'damonjs-spotify',
-  version: '1.0.1',
+  version: '1.0.2',
   author: 'achira',
 };
 
-export default DamonJsPlugin;
+export { DamonJsPlugin, packageData };
