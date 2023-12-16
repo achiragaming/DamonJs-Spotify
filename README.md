@@ -17,7 +17,7 @@
 
 ## Links
 
-- DamonJs; [npm](https://www.npmjs.com/package/damonjs) [github](https://github.com/achiragaming/damonjs)
+- DamonJs; [npm](https://www.npmjs.com/package/damonjs) [github](https://github.com/achiragaming/DamonJs)
 - DamonJs-Spotify; [npm](https://www.npmjs.com/package/damonjs-spotify)
 
 #### How to
