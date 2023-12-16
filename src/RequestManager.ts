@@ -1,6 +1,6 @@
 import { SpotifyOptions } from './Plugin';
 import { SpotifyRequest } from './SpotifyRequest';
-import { KazagumoError } from 'kazagumo-better';
+import { DamonJsError } from 'damonjs';
 
 export class RequestManager {
   private requests: SpotifyRequest[] = [];
@@ -24,7 +24,7 @@ export class RequestManager {
     if (this.mode === 'single') return this.requests[0].makeRequest<T>(endpoint, disableBaseUri);
 
     const targetRequest = this.getLeastUsedRequest();
-    if (!targetRequest) throw new KazagumoError(4, 'No available requests [ALL_RATE_LIMITED]');
+    if (!targetRequest) throw new DamonJsError(4, 'No available requests [ALL_RATE_LIMITED]');
     return targetRequest
       .makeRequest<T>(endpoint, disableBaseUri)
       .catch((e) =>

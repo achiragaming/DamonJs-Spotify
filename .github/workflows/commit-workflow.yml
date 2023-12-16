@@ -1,8 +1,8 @@
-name: Commit WorkFlow
+name: Commit Workflow
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   build:
@@ -12,27 +12,98 @@ jobs:
       matrix:
         node-version: [18.x]
 
+    outputs:
+      tag: ${{ steps.get_version.outputs.tag }}
+      preview: ${{ steps.get_preview.outputs.preview }}
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Check Errors
-        run: |
+      - run: |
           npm run lint
           npm run format
 
-      - name: Build
+      - name: Build the package
+        run: npm run build
+
+      - name: Archive project folder
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-folder
+          path: ./dist
+
+      - id: get_version
         run: |
-          npm run build:full
-          
-      - name: Publish to NPM
+          version=$(node -p 'require("./package.json").version')
+          echo "::set-output name=tag::$version"
+
+      - id: get_preview
+        run: |
+          preview=$(node -p 'require("./package.json").preview ? "true" : "false"')
+          echo "::set-output name=preview::$preview"
+
+  publish-dev:
+    needs: build
+    runs-on: ubuntu-latest
+
+    if: needs.build.outputs.preview == 'true'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist-folder
+          path: dist
+
+      - run: ls
+
+      - name: Publish to NPM (Dev Version)
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm publish --tag=dev
+
+  publish-prod:
+    needs: build
+    runs-on: ubuntu-latest
+
+    if: needs.build.outputs.preview != 'true'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist-folder
+          path: dist
+
+      - run: ls
+
+      - name: Publish to NPM (Prod Version)
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           npm publish
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.build.outputs.tag }}
+          release_name: Release v${{ needs.build.outputs.tag }}
+          body: |
+            Release v${{ needs.build.outputs.tag }}
+          draft: false
+          prerelease: ${{ needs.build.outputs.preview == 'true' }}

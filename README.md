@@ -1,6 +1,6 @@
-# kazagumo-spotify
+# DamonJs-Spotify
 
-## A spotify plugin for kazagumo module
+## A spotify plugin for DamonJs module
 
 ## Accepted query
 
@@ -13,20 +13,20 @@
 
 ## Installation
 
-> npm i kazagumo-better-spotify
+> npm i damonjs-spotify
 
 ## Links
 
-- Kazagumo; [npm](https://www.npmjs.com/package/kazagumo-better) [github](https://github.com/achiragaming/kazagumo-better)
-- Kazagumo-spotify; [npm](https://www.npmjs.com/package/kazagumo-better-spotify)
+- DamonJs; [npm](https://www.npmjs.com/package/damonjs) [github](https://github.com/achiragaming/damonjs)
+- DamonJs-Spotify; [npm](https://www.npmjs.com/package/damonjs-spotify)
 
 #### How to
 
 ```js
-const { Kazagumo } = require('kazagumo-better');
-const Spotify = require('kazagumo-better-spotify');
+const { DamonJs } = require('damonjs');
+const Spotify = require('damonjs-spotify');
 
-const kazagumo = new Kazagumo(
+const DamonJs = new DamonJs(
   {
     plugins: [
       new Spotify({
@@ -43,6 +43,6 @@ const kazagumo = new Kazagumo(
   Nodes,
 );
 
-kazagumo.search(`https://open.spotify.com/track/7nw4ElerVAP5235FN5D2OI`); // track, album, playlist, artist
-kazagumo.search('mirror heart', { engine: 'spotify' }); // search track using spotify
+DamonJs.search(`https://open.spotify.com/track/7nw4ElerVAP5235FN5D2OI`); // track, album, playlist, artist
+DamonJs.search('mirror heart', { engine: 'spotify' }); // search track using spotify
 ```

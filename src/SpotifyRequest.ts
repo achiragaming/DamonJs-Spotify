@@ -1,6 +1,6 @@
 import { fetch } from 'undici';
 import { SpotifyOptions } from './Plugin';
-import { KazagumoError } from 'kazagumo-better';
+import { DamonJsError } from 'damonjs';
 
 const BASE_URL = 'https://api.spotify.com/v1';
 
@@ -30,7 +30,7 @@ export class SpotifyRequest {
 
     if (request.headers.get('x-ratelimit-remaining') === '0') {
       this.handleRateLimited(Number(request.headers.get('x-ratelimit-reset')) * 1000);
-      throw new KazagumoError(2, 'Rate limited by spotify');
+      throw new DamonJsError(2, 'Rate limited by spotify');
     }
     this.stats.requests++;
 
@@ -58,7 +58,7 @@ export class SpotifyRequest {
       expires_in: number;
     };
 
-    if (!access_token) throw new KazagumoError(3, 'Failed to get access token due to invalid spotify client');
+    if (!access_token) throw new DamonJsError(3, 'Failed to get access token due to invalid spotify client');
 
     this.token = `Bearer ${access_token}`;
     this.nextRenew = Date.now() + expires_in * 1000;

@@ -1,9 +1,9 @@
-import { KazagumoPlugin } from './Plugin';
+import { DamonJsPlugin } from './Plugin';
 
 export const packageData = {
-  name: 'kazagumo-better-spotify',
-  version: '1.0.4',
+  name: 'damonjs-spotify',
+  version: '1.0.0',
   author: 'achira',
 };
 
-export default KazagumoPlugin;
+export default DamonJsPlugin;

@@ -1,7 +1,8 @@
 {
-  "name": "kazagumo-better-spotify",
-  "version": "1.0.4",
-  "description": "A Modified spotify module for kazagumo",
+  "name": "damonjs-spotify",
+  "version": "1.0.0",
+  "preview": false,
+  "description": "A spotify module for damonjs",
   "main": "dist/Index.js",
   "types": "dist/Index.d.ts",
   "files": [
@@ -16,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/achiragaming/kazagumo-better-spotify.git"
+    "url": "git+https://github.com/achiragaming/damonjs-spotify.git"
   },
   "keywords": [
     "spotify",
     "module",
-    "kazagumo-better",
-    "kazagumo-plugin",
-    "kazagumo-plugin-spotify",
-    "kazagumo-spotify",
+    "damonjs",
+    "damonjs-plugin",
+    "damonjs-plugin-spotify",
+    "damonjs-spotify",
     "plugin",
     "spotify-plugin"
   ],
@@ -35,11 +36,11 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/achiragaming/kazagumo-better-spotify/issues"
+    "url": "https://github.com/achiragaming/damonjs-spotify/issues"
   },
-  "homepage": "https://github.com/achiragaming/kazagumo-better-spotify#readme",
+  "homepage": "https://github.com/achiragaming/damonjs-spotify#readme",
   "dependencies": {
-    "kazagumo-better": "^1.3.3",
+    "damonjs": "^1.1.5",
     "undici": "^5.5.1"
   },
   "engines": {

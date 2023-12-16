@@ -1,13 +1,13 @@
 import {
-  KazagumoPlugin as Plugin,
-  KazagumoSearchOptions,
-  KazagumoSearchResult,
-  Kazagumo,
-  KazagumoError,
-  KazagumoTrack,
+  DamonJsPlugin as Plugin,
+  DamonJsSearchOptions,
+  DamonJsSearchResult,
+  DamonJs,
+  DamonJsError,
+  DamonJsTrack,
   SearchResultTypes,
-  KazagumoPlayer,
-} from 'kazagumo-better';
+  DamonJsPlayer,
+} from 'damonjs';
 import { packageData } from './Index';
 import { RequestManager } from './RequestManager';
 import undici from 'undici';
@@ -31,17 +31,17 @@ export interface SpotifyOptions {
   searchMarket?: string;
 }
 
-export class KazagumoPlugin extends Plugin {
+export class DamonJsPlugin extends Plugin {
   /**
    * The options of the plugin.
    */
   public options: SpotifyOptions;
 
   private _search:
-    | ((player: KazagumoPlayer, query: string, options: KazagumoSearchOptions) => Promise<KazagumoSearchResult>)
+    | ((player: DamonJsPlayer, query: string, options: DamonJsSearchOptions) => Promise<DamonJsSearchResult>)
     | null;
 
-  private kazagumo: Kazagumo | null;
+  private DamonJs: DamonJs | null;
   private undici = undici;
 
   private readonly methods: Record<string, (id: string, requester: unknown) => Promise<Result>>;
@@ -51,9 +51,9 @@ export class KazagumoPlugin extends Plugin {
         playlistInfo?:
           | { encoded: string; info: { name: string; selectedTrack: number }; pluginInfo: unknown }
           | undefined,
-        tracks?: KazagumoTrack[] | undefined,
+        tracks?: DamonJsTrack[] | undefined,
         type?: SearchResultTypes | undefined,
-      ) => KazagumoSearchResult)
+      ) => DamonJsSearchResult)
     | null;
 
   constructor(spotifyOptions: SpotifyOptions) {
@@ -67,29 +67,29 @@ export class KazagumoPlugin extends Plugin {
       artist: this.getArtist.bind(this),
       playlist: this.getPlaylist.bind(this),
     };
-    this.kazagumo = null;
+    this.DamonJs = null;
     this.buildSearch = null;
     this._search = null;
   }
 
-  public load(kazagumo: Kazagumo) {
-    this.kazagumo = kazagumo;
-    this._search = kazagumo.search.bind(kazagumo);
-    this.buildSearch = kazagumo.buildSearch.bind(kazagumo);
-    kazagumo.search = this.search.bind(this);
+  public load(DamonJs: DamonJs) {
+    this.DamonJs = DamonJs;
+    this._search = DamonJs.search.bind(DamonJs);
+    this.buildSearch = DamonJs.buildSearch.bind(DamonJs);
+    DamonJs.search = this.search.bind(this);
   }
   private get pluginInfo() {
     return { ...packageData };
   }
   private async search(
-    player: KazagumoPlayer,
+    player: DamonJsPlayer,
     query: string,
-    options: KazagumoSearchOptions,
-  ): Promise<KazagumoSearchResult> {
-    if (!this.kazagumo || !this._search || !this.buildSearch)
-      throw new KazagumoError(1, 'kazagumo-spotify is not loaded yet.');
+    options: DamonJsSearchOptions,
+  ): Promise<DamonJsSearchResult> {
+    if (!this.DamonJs || !this._search || !this.buildSearch)
+      throw new DamonJsError(1, 'DamonJs-spotify is not loaded yet.');
 
-    if (!query) throw new KazagumoError(3, 'Query is required');
+    if (!query) throw new DamonJsError(3, 'Query is required');
     const [, type, id] = REGEX.exec(query) || [];
 
     const isUrl = /^https?:\/\//.test(query);
@@ -142,13 +142,13 @@ export class KazagumoPlugin extends Plugin {
       `/search?q=${decodeURIComponent(query)}&type=track&limit=${limit}&market=${this.options.searchMarket ?? 'US'}`,
     );
     return {
-      tracks: tracks.tracks.items.map((track) => this.buildKazagumoTrack(track, requester)),
+      tracks: tracks.tracks.items.map((track) => this.buildDamonJsTrack(track, requester)),
     };
   }
 
   private async getTrack(id: string, requester: unknown): Promise<Result> {
     const track = await this.requestManager.makeRequest<TrackResult>(`/tracks/${id}`);
-    return { tracks: [this.buildKazagumoTrack(track, requester)] };
+    return { tracks: [this.buildDamonJsTrack(track, requester)] };
   }
 
   private async getAlbum(id: string, requester: unknown): Promise<Result> {
@@ -157,7 +157,7 @@ export class KazagumoPlugin extends Plugin {
     );
     const tracks = album.tracks.items
       .filter(this.filterNullOrUndefined)
-      .map((track) => this.buildKazagumoTrack(track, requester, album.images[0]?.url));
+      .map((track) => this.buildDamonJsTrack(track, requester, album.images[0]?.url));
 
     if (album && tracks.length) {
       let next = album.tracks.next;
@@ -172,7 +172,7 @@ export class KazagumoPlugin extends Plugin {
             ...nextTracks.items
               .filter(this.filterNullOrUndefined)
               .filter((a) => a.track)
-              .map((track) => this.buildKazagumoTrack(track.track!, requester, album.images[0]?.url)),
+              .map((track) => this.buildDamonJsTrack(track.track!, requester, album.images[0]?.url)),
           );
         }
       }
@@ -189,7 +189,7 @@ export class KazagumoPlugin extends Plugin {
 
     const tracks = fetchedTracks.tracks
       .filter(this.filterNullOrUndefined)
-      .map((track) => this.buildKazagumoTrack(track, requester, artist.images[0]?.url));
+      .map((track) => this.buildDamonJsTrack(track, requester, artist.images[0]?.url));
 
     return { tracks, name: artist.name };
   }
@@ -201,7 +201,7 @@ export class KazagumoPlugin extends Plugin {
 
     const tracks = playlist.tracks.items
       .filter(this.filterNullOrUndefined)
-      .map((track) => this.buildKazagumoTrack(track.track, requester, playlist.images[0]?.url));
+      .map((track) => this.buildDamonJsTrack(track.track, requester, playlist.images[0]?.url));
 
     if (playlist && tracks.length) {
       let next = playlist.tracks.next;
@@ -215,7 +215,7 @@ export class KazagumoPlugin extends Plugin {
             ...nextTracks.items
               .filter(this.filterNullOrUndefined)
               .filter((a) => a.track)
-              .map((track) => this.buildKazagumoTrack(track.track!, requester, playlist.images[0]?.url)),
+              .map((track) => this.buildDamonJsTrack(track.track!, requester, playlist.images[0]?.url)),
           );
         }
       }
@@ -227,8 +227,8 @@ export class KazagumoPlugin extends Plugin {
     return obj !== undefined && obj !== null;
   }
 
-  private buildKazagumoTrack(spotifyTrack: Track, requester: unknown, thumbnail?: string) {
-    return new KazagumoTrack(
+  private buildDamonJsTrack(spotifyTrack: Track, requester: unknown, thumbnail?: string) {
+    return new DamonJsTrack(
       {
         encoded: '',
         info: {
@@ -255,7 +255,7 @@ export interface SearchResult {
 }
 
 export interface Result {
-  tracks: KazagumoTrack[];
+  tracks: DamonJsTrack[];
   name?: string;
 }
 
