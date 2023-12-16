@@ -1,6 +1,6 @@
 {
   "name": "damonjs-spotify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "preview": false,
   "description": "A spotify module for damonjs",
   "main": "dist/Index.js",
