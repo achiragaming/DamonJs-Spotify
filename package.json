@@ -1,6 +1,6 @@
 {
   "name": "damonjs-spotify",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "preview": false,
   "description": "A spotify module for damonjs",
   "main": "dist/Index.js",
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/achiragaming/DamonJs-Spotify#readme",
   "dependencies": {
-    "damonjs": "^1.2.3",
+    "damonjs": "^1.2.6",
     "undici": "^5.5.1"
   },
   "engines": {
