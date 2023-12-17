@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/achiragaming/DamonJs-Spotify#readme",
   "dependencies": {
-    "damonjs": "^1.2.2",
+    "damonjs": "^1.2.3",
     "undici": "^5.5.1"
   },
   "engines": {
