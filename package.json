@@ -1,6 +1,6 @@
 {
   "name": "damonjs-spotify",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "preview": false,
   "description": "A spotify module for damonjs",
   "main": "dist/Index.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/achiragaming/damonjs-spotify.git"
+    "url": "git+https://github.com/achiragaming/DamonJs-Spotify.git"
   },
   "keywords": [
     "spotify",
@@ -36,9 +36,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/achiragaming/damonjs-spotify/issues"
+    "url": "https://github.com/achiragaming/DamonJs-Spotify/issues"
   },
-  "homepage": "https://github.com/achiragaming/damonjs-spotify#readme",
+  "homepage": "https://github.com/achiragaming/DamonJs-Spotify#readme",
   "dependencies": {
     "damonjs": "^1.2.2",
     "undici": "^5.5.1"
