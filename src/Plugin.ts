@@ -45,7 +45,7 @@ export class DamonJsPlugin extends Plugin {
   private undici = undici;
 
   private readonly methods: Record<string, (id: string, requester: unknown) => Promise<Result>>;
-  public requestManager: RequestManager;
+  private requestManager: RequestManager;
   buildSearch:
     | ((
         playlistInfo?:
@@ -133,7 +133,7 @@ export class DamonJsPlugin extends Plugin {
     return this._search(player, query, options);
   }
 
-  private async searchTrack(query: string, requester: unknown): Promise<Result> {
+  public async searchTrack(query: string, requester: unknown): Promise<Result> {
     const limit =
       this.options.searchLimit && this.options.searchLimit > 0 && this.options.searchLimit < 50
         ? this.options.searchLimit
@@ -146,12 +146,12 @@ export class DamonJsPlugin extends Plugin {
     };
   }
 
-  private async getTrack(id: string, requester: unknown): Promise<Result> {
+  public async getTrack(id: string, requester: unknown): Promise<Result> {
     const track = await this.requestManager.makeRequest<TrackResult>(`/tracks/${id}`);
     return { tracks: [this.buildDamonJsTrack(track, requester)] };
   }
 
-  private async getAlbum(id: string, requester: unknown): Promise<Result> {
+  public async getAlbum(id: string, requester: unknown): Promise<Result> {
     const album = await this.requestManager.makeRequest<AlbumResult>(
       `/albums/${id}?market=${this.options.searchMarket ?? 'US'}`,
     );
@@ -194,7 +194,7 @@ export class DamonJsPlugin extends Plugin {
     return { tracks, name: artist.name };
   }
 
-  private async getPlaylist(id: string, requester: unknown): Promise<Result> {
+  public async getPlaylist(id: string, requester: unknown): Promise<Result> {
     const playlist = await this.requestManager.makeRequest<PlaylistResult>(
       `/playlists/${id}?market=${this.options.searchMarket ?? 'US'}`,
     );
@@ -221,6 +221,21 @@ export class DamonJsPlugin extends Plugin {
       }
     }
     return { tracks, name: playlist.name };
+  }
+
+  public async getRecommendations(identifier: string, requester: unknown): Promise<Result> {
+    const limit =
+      this.options.searchLimit && this.options.searchLimit > 0 && this.options.searchLimit < 50
+        ? this.options.searchLimit
+        : 10;
+    const tracks = await this.requestManager.makeRequest<ReccomendResult>(
+      `/recommendations?seed_tracks=${identifier}&type=track&limit=${limit}&market=${
+        this.options.searchMarket ?? 'US'
+      }`,
+    );
+    return {
+      tracks: tracks.tracks.map((track) => this.buildDamonJsTrack(track, requester)),
+    };
   }
 
   private filterNullOrUndefined(obj: unknown): obj is unknown {
@@ -253,12 +268,24 @@ export class DamonJsPlugin extends Plugin {
 export interface SearchResult {
   tracks: Tracks;
 }
+export interface ReccomendResult {
+  tracks: Track[];
+  seeds: Seed[];
+}
 
 export interface Result {
   tracks: DamonJsTrack[];
   name?: string;
 }
 
+export interface Seed {
+  initialPoolSize: number;
+  afterFilteringSize: number;
+  afterRelinkingSize: number;
+  id: string;
+  type: string;
+  href: string;
+}
 export interface TrackResult {
   album: Album;
   artists: Artist[];
