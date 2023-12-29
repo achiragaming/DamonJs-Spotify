@@ -2,7 +2,7 @@ import { DamonJsPlugin } from './Plugin';
 
 const packageData = {
   name: 'damonjs-spotify',
-  version: '1.1.1',
+  version: '1.1.2',
   author: 'achira',
 };
 
