@@ -45,7 +45,7 @@ export class DamonJsPlugin extends Plugin {
   private undici = undici;
 
   private readonly methods: Record<string, (id: string, requester: unknown) => Promise<Result>>;
-  private requestManager: RequestManager;
+  public requestManager: RequestManager;
   buildSearch:
     | ((
         playlistInfo?:
