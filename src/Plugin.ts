@@ -10,7 +10,7 @@ import {
 } from 'damonjs';
 import { packageData } from './Index';
 import { RequestManager } from './RequestManager';
-import undici from 'undici';
+import axios from 'axios';
 const REGEX = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|album|artist)[\/:]([A-Za-z0-9]+)/;
 const SHORT_REGEX = /(?:https:\/\/spotify\.link)\/([A-Za-z0-9]+)/;
 
@@ -42,8 +42,7 @@ export class DamonJsPlugin extends Plugin {
     | null;
 
   private DamonJs: DamonJs | null;
-  private undici = undici;
-
+  private axios = axios;
   private readonly methods: Record<string, (id: string, requester: unknown) => Promise<Result>>;
   private requestManager: RequestManager;
   buildSearch:
@@ -95,8 +94,12 @@ export class DamonJsPlugin extends Plugin {
     const isUrl = /^https?:\/\//.test(query);
 
     if (SHORT_REGEX.test(query)) {
-      const res = await this.undici.request(query, { method: 'HEAD' });
-      query = String(res.headers.location);
+      try {
+        const res = await this.axios.request({ method: 'HEAD', url: query, timeout: 10 });
+        query = String(res.headers.location);
+      } catch (error) {
+        throw error;
+      }
     }
 
     if (type in this.methods) {

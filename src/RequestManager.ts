@@ -1,4 +1,4 @@
-import { SpotifyOptions } from './Plugin';
+import { DamonJsPlugin, SpotifyOptions } from './Plugin';
 import { SpotifyRequest } from './SpotifyRequest';
 import { DamonJsError } from 'damonjs';
 
