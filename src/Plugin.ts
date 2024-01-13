@@ -226,13 +226,13 @@ export class DamonJsPlugin extends Plugin {
     return { tracks, name: playlist.name };
   }
 
-  public async getRecommendations(identifier: string, requester: unknown): Promise<Result> {
+  public async getRecommendations(identifiers: string[], requester: unknown): Promise<Result> {
     const limit =
       this.options.searchLimit && this.options.searchLimit > 0 && this.options.searchLimit < 50
         ? this.options.searchLimit
         : 10;
     const tracks = await this.requestManager.makeRequest<ReccomendResult>(
-      `/recommendations?seed_tracks=${identifier}&type=track&limit=${limit}&market=${
+      `/recommendations?seed_tracks=${identifiers.join(",")}&type=track&limit=${limit}&market=${
         this.options.searchMarket ?? 'US'
       }`,
     );
