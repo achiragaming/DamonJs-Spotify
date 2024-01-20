@@ -38,7 +38,7 @@ export class DamonJsPlugin extends Plugin {
   public options: SpotifyOptions;
 
   private _search:
-    | ((player: DamonJsPlayer, query: string, options: DamonJsSearchOptions) => Promise<DamonJsSearchResult>)
+    | ((query: string, options: DamonJsSearchOptions, player?: DamonJsPlayer) => Promise<DamonJsSearchResult>)
     | null;
 
   private DamonJs: DamonJs | null;
@@ -81,9 +81,9 @@ export class DamonJsPlugin extends Plugin {
     return { ...packageData };
   }
   private async search(
-    player: DamonJsPlayer,
     query: string,
     options: DamonJsSearchOptions,
+    player?: DamonJsPlayer,
   ): Promise<DamonJsSearchResult> {
     if (!this.DamonJs || !this._search || !this.buildSearch)
       throw new DamonJsError(1, 'DamonJs-spotify is not loaded yet.');
@@ -133,7 +133,7 @@ export class DamonJsPlugin extends Plugin {
       return this.buildSearch(undefined, result.tracks, SearchResultTypes.Search);
     }
 
-    return this._search(player, query, options);
+    return this._search(query, options, player);
   }
 
   public async searchTrack(query: string, requester: unknown): Promise<Result> {
@@ -232,7 +232,7 @@ export class DamonJsPlugin extends Plugin {
         ? this.options.searchLimit
         : 10;
     const tracks = await this.requestManager.makeRequest<ReccomendResult>(
-      `/recommendations?seed_tracks=${identifiers.join(",")}&type=track&limit=${limit}&market=${
+      `/recommendations?seed_tracks=${identifiers.join(',')}&type=track&limit=${limit}&market=${
         this.options.searchMarket ?? 'US'
       }`,
     );
