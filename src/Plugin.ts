@@ -129,8 +129,8 @@ export class DamonJsPlugin extends Plugin {
       }
     } else if (options?.engine === 'spotify' && !isUrl) {
       const result = await this.searchTrack(query, options?.requester);
-
-      return this.buildSearch(undefined, result.tracks, SearchResultTypes.Search);
+      const tracks = result.tracks.filter(this.filterNullOrUndefined);
+      if (tracks.length) return this.buildSearch(undefined, result.tracks, SearchResultTypes.Search);
     }
 
     return this._search(query, options, player);
