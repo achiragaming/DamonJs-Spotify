@@ -41,7 +41,7 @@
   "homepage": "https://github.com/achiragaming/DamonJs-Spotify#readme",
   "dependencies": {
     "axios": "^1.6.5",
-    "damonjs": "^1.6.3"
+    "damonjs": "^2.0.1"
   },
   "engines": {
     "node": ">=16.5.0"

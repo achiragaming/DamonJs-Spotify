@@ -8,7 +8,7 @@ import {
   SearchResultTypes,
   DamonJsPlayer,
 } from 'damonjs';
-import { packageData } from './Index';
+import { packageData } from '../Index';
 import { RequestManager } from './RequestManager';
 import axios from 'axios';
 const REGEX = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|album|artist)[\/:]([A-Za-z0-9]+)/;
