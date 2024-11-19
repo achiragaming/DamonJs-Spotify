@@ -166,8 +166,8 @@ export class DamonJsPlugin extends Plugin {
       let next = album.tracks.next;
       let page = 1;
 
-      while (next && (!this.options.playlistPageLimit ? true : page < this.options.playlistPageLimit ?? 1)) {
-        const nextTracks = await this.requestManager.makeRequest<PlaylistTracks>(next ?? '', true);
+      while (next && (this.options.playlistPageLimit ? page < this.options.playlistPageLimit : true)) {
+        const nextTracks = await this.requestManager.makeRequest<PlaylistTracks>(next, true);
         page++;
         if (nextTracks.items.length) {
           next = nextTracks.next;
@@ -209,8 +209,8 @@ export class DamonJsPlugin extends Plugin {
     if (playlist && tracks.length) {
       let next = playlist.tracks.next;
       let page = 1;
-      while (next && (!this.options.playlistPageLimit ? true : page < this.options.playlistPageLimit ?? 1)) {
-        const nextTracks = await this.requestManager.makeRequest<PlaylistTracks>(next ?? '', true);
+      while (next && (this.options.playlistPageLimit ? page < this.options.playlistPageLimit : true)) {
+        const nextTracks = await this.requestManager.makeRequest<PlaylistTracks>(next, true);
         page++;
         if (nextTracks.items.length) {
           next = nextTracks.next;
@@ -225,7 +225,6 @@ export class DamonJsPlugin extends Plugin {
     }
     return { tracks, name: playlist.name };
   }
-
   public async getRecommendations(identifiers: string[], requester: unknown): Promise<Result> {
     const limit =
       this.options.searchLimit && this.options.searchLimit > 0 && this.options.searchLimit < 50
